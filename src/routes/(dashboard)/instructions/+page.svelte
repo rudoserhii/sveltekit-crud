@@ -1,11 +1,26 @@
-<script>
+<script lang="ts">
 	import { Button } from '$lib/components/ui/button';
 	import InstructionForm from './InstructionForm.svelte';
 	import * as Table from '$lib/components/ui/table';
 
-	let { data } = $props();
+	let { data, form } = $props();
+
+	let instructions = $state(data.instructions);
+
+	$effect(() => {
+		instructions = data.instructions;
+	});
 
 	let dialogOpen = $state(false);
+
+	async function handleDelete(id: number) {
+		const response = await fetch(`/api/instructions/${id}`, {
+			method: 'DELETE'
+		});
+		if (response.ok) {
+			instructions = instructions.filter((i) => i.id !== id);
+		}
+	}
 </script>
 
 <div class="flex flex-1 flex-row justify-between">
@@ -28,7 +43,7 @@
 		</Table.Header>
 
 		<Table.Body>
-			{#each data.instructions as instruction}
+			{#each instructions as instruction}
 				<Table.Row>
 					<Table.Cell>{instruction.title}</Table.Cell>
 					<Table.Cell>{instruction.description}</Table.Cell>
@@ -43,7 +58,9 @@
 					<Table.Cell>{instruction.updated_by.name}</Table.Cell>
 					<Table.Cell align="right">
 						<Button variant="secondary">Edit</Button>
-						<Button variant="destructive">Delete</Button>
+						<Button variant="destructive" on:click={() => handleDelete(instruction.id)}
+							>Delete</Button
+						>
 					</Table.Cell>
 				</Table.Row>{/each}
 		</Table.Body>

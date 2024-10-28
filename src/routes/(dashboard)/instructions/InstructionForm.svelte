@@ -12,7 +12,11 @@
 	let { open = $bindable(), edit = false } = $props();
 
 	const form = superForm({} as SuperValidated<Infer<typeof instructionSchema>>, {
-		validators: zodClient(instructionSchema)
+		validators: zodClient(instructionSchema),
+		onUpdated(event) {
+			if (event.form) {
+			}
+		}
 	});
 	const { form: formData, enhance } = form;
 	const file = fileProxy(form, 'preview_file');
@@ -24,7 +28,14 @@
 			<Dialog.Title>{edit ? 'Edit Instruction' : 'Add Instruction'}</Dialog.Title>
 		</Dialog.Header>
 
-		<form id="instruction-form" class="mt-8 space-y-2" use:enhance method="POST" action="/instructions" enctype="multipart/form-data">
+		<form
+			id="instruction-form"
+			class="mt-8 space-y-2"
+			use:enhance
+			method="POST"
+			action="/instructions"
+			enctype="multipart/form-data"
+		>
 			<Form.Field {form} name="title">
 				<Form.Control let:attrs>
 					<Form.Label>Title</Form.Label>
@@ -60,6 +71,7 @@
 				</Form.Control>
 			</Form.Field>
 		</form>
+
 		<Dialog.Footer>
 			<Button form="instruction-form" type="submit">Save changes</Button>
 		</Dialog.Footer>

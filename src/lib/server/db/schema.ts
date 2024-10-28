@@ -23,7 +23,8 @@ export const instructions = pgTable('instructions', {
 	created_at: timestamp('created_at').defaultNow(),
 	updated_at: timestamp('updated_at')
 		.defaultNow()
-		.$onUpdate(() => new Date())
+		.$onUpdate(() => new Date()),
+	deletedAt: timestamp('deleted_at', { withTimezone: true })
 });
 export const instructionsRelations = relations(instructions, ({ one }) => ({
 	created_by: one(users, { fields: [instructions.created_by], references: [users.id] }),
@@ -40,14 +41,16 @@ export const steps = pgTable('steps', {
 	attached_file: varchar('attached_file', { length: 255 }).notNull(), // Assuming file path or URL
 	instruction_id: integer('instruction_id')
 		.notNull()
-		.references(() => instructions.id) // Foreign key
+		.references(() => instructions.id), // Foreign key
+	deletedAt: timestamp('deleted_at', { withTimezone: true })
 });
 
 // Asset model
 export const assets = pgTable('assets', {
 	id: serial('id').primaryKey(),
 	name: varchar('name', { length: 255 }).notNull(),
-	asset_file: json('asset_file').notNull() // Storing multiple files as JSON
+	asset_file: json('asset_file').notNull(), // Storing multiple files as JSON
+	deletedAt: timestamp('deleted_at', { withTimezone: true })
 });
 
 // Instruction-Asset relation table
