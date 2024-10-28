@@ -15,7 +15,7 @@
 		if (data.token) {
 			auth.token = data.token;
 			setContext('auth', auth);
-			goto('/');
+			goto('/instructions');
 		}
 	});
 

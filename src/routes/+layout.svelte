@@ -1,7 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 
-	import { onMount, setContext } from 'svelte';
+	import { setContext } from 'svelte';
 	import { goto } from '$app/navigation';
 
 	let { children, data } = $props();

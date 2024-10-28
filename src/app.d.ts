@@ -7,6 +7,7 @@ declare global {
 			auth?: {
 				token?: string;
 				username?: string;
+				userId?: number;
 			};
 		}
 		// interface PageData {}
