@@ -1,3 +1,4 @@
+import { relations } from 'drizzle-orm';
 import { pgTable, serial, text, integer, varchar, timestamp, json } from 'drizzle-orm/pg-core';
 
 // User model
@@ -24,6 +25,10 @@ export const instructions = pgTable('instructions', {
 		.defaultNow()
 		.$onUpdate(() => new Date())
 });
+export const instructionsRelations = relations(instructions, ({ one }) => ({
+	created_by: one(users, { fields: [instructions.created_by], references: [users.id] }),
+	updated_by: one(users, { fields: [instructions.updated_by], references: [users.id] })
+}));
 
 // Step model
 export const steps = pgTable('steps', {
@@ -61,5 +66,6 @@ export const models = {
 	instructions,
 	steps,
 	assets,
-	instruction_assets
+	instruction_assets,
+	instructionsRelations
 };

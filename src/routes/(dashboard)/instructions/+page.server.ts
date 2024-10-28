@@ -6,6 +6,18 @@ import { writeFileSync } from 'fs';
 import crypto from 'crypto';
 import { instructions } from '$lib/server/db/schema';
 import db from '$lib/server/db/db';
+import type { PageServerLoad } from './$types';
+
+export const load: PageServerLoad = async () => {
+	return {
+		instructions: await db.query.instructions.findMany({
+			with: {
+				created_by: true,
+				updated_by: true
+			}
+		})
+	};
+};
 
 export const actions = {
 	default: async (event) => {
