@@ -5,7 +5,12 @@ const instructionSchema = z.object({
 	title: z.string().max(255),
 	description: z.string(),
 	duration: z.number(),
-	preview_file: z.instanceof(File, { message: 'Please upload a file.' })
+	preview_file: z.union([
+		z.instanceof(File).refine((file) => file.size > 0, {
+			message: 'Please upload a valid file.'
+		}),
+		z.string().min(1, { message: 'Please provide a valid string.' })
+	])
 });
 
 export default instructionSchema;

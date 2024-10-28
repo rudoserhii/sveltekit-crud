@@ -3,9 +3,11 @@
 	import InstructionForm from './InstructionForm.svelte';
 	import * as Table from '$lib/components/ui/table';
 
-	let { data, form } = $props();
+	let { data } = $props();
 
 	let instructions = $state(data.instructions);
+
+	let selectedInstruction = $state<(typeof instructions)[0]>();
 
 	$effect(() => {
 		instructions = data.instructions;
@@ -57,7 +59,13 @@
 					<Table.Cell>{instruction.created_by.name}</Table.Cell>
 					<Table.Cell>{instruction.updated_by.name}</Table.Cell>
 					<Table.Cell align="right">
-						<Button variant="secondary">Edit</Button>
+						<Button
+							variant="secondary"
+							on:click={() => {
+								selectedInstruction = instruction;
+								dialogOpen = true;
+							}}>Edit</Button
+						>
 						<Button variant="destructive" on:click={() => handleDelete(instruction.id)}
 							>Delete</Button
 						>
@@ -67,4 +75,10 @@
 	</Table.Root>
 </div>
 
-<InstructionForm bind:open={dialogOpen} />
+{#if dialogOpen}
+	<InstructionForm
+		bind:open={dialogOpen}
+		edit={!!selectedInstruction}
+		initialData={selectedInstruction}
+	/>
+{/if}

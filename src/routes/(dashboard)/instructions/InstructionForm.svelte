@@ -9,12 +9,15 @@
 	import instructionSchema from './schema';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 
-	let { open = $bindable(), edit = false } = $props();
+	let { open = $bindable(), edit = false, initialData = {} } = $props();
 
-	const form = superForm({} as SuperValidated<Infer<typeof instructionSchema>>, {
+	const form = superForm(initialData as SuperValidated<Infer<typeof instructionSchema>>, {
 		validators: zodClient(instructionSchema),
-		onUpdated(event) {
-			if (event.form) {
+		applyAction: true,
+		dataType: 'json',
+		onUpdate(event) {
+			if ((event.result.type = 'success')) {
+				open = false;
 			}
 		}
 	});
@@ -33,7 +36,7 @@
 			class="mt-8 space-y-2"
 			use:enhance
 			method="POST"
-			action="/instructions"
+			action={edit ? `/instructions/${initialData!.id}?/update` : '/instructions'}
 			enctype="multipart/form-data"
 		>
 			<Form.Field {form} name="title">
@@ -64,7 +67,11 @@
 							>Choose Preview File</Form.Label
 						>
 
-						<p>{$formData.preview_file?.name || 'File not choosen'}</p>
+						<p class="text-sm text-foreground/80">
+							{($formData.preview_file instanceof File
+								? $formData.preview_file?.name
+								: $formData.preview_file) || 'File not choosen'}
+						</p>
 					</div>
 
 					<input type="file" hidden {...attrs} bind:files={$file} />
