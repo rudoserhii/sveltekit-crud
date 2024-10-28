@@ -5,7 +5,7 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Form from '$lib/components/ui/form';
 
-	import { superForm, type SuperValidated, type Infer } from 'sveltekit-superforms';
+	import { superForm, type SuperValidated, type Infer, fileProxy } from 'sveltekit-superforms';
 	import instructionSchema from './schema';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 
@@ -15,15 +15,16 @@
 		validators: zodClient(instructionSchema)
 	});
 	const { form: formData, enhance } = form;
+	const file = fileProxy(form, 'preview_file');
 </script>
 
-<Dialog.Root bind:open={open}>
+<Dialog.Root bind:open>
 	<Dialog.Content class="sm:max-w-[600px]">
 		<Dialog.Header>
 			<Dialog.Title>{edit ? 'Edit Instruction' : 'Add Instruction'}</Dialog.Title>
 		</Dialog.Header>
 
-		<form class="mt-8 space-y-2" use:enhance method="POST">
+		<form id="instruction-form" class="mt-8 space-y-2" use:enhance method="POST" action="/instructions" enctype="multipart/form-data">
 			<Form.Field {form} name="title">
 				<Form.Control let:attrs>
 					<Form.Label>Title</Form.Label>
@@ -52,15 +53,15 @@
 							>Choose Preview File</Form.Label
 						>
 
-						<p>{$formData.preview_file || 'File not choosen'}</p>
+						<p>{$formData.preview_file?.name || 'File not choosen'}</p>
 					</div>
 
-					<input type="file" hidden {...attrs} bind:value={$formData.preview_file} />
+					<input type="file" hidden {...attrs} bind:files={$file} />
 				</Form.Control>
 			</Form.Field>
 		</form>
 		<Dialog.Footer>
-			<Button type="submit">Save changes</Button>
+			<Button form="instruction-form" type="submit">Save changes</Button>
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>

@@ -10,9 +10,6 @@ import { JWT_SECRET } from '$env/static/private';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = (event) => {
-	// if (event.locals.auth?.token) {
-	// 	redirect(301, '/');
-	// }
 	return event.locals.auth;
 };
 

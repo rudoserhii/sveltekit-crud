@@ -1,6 +1,5 @@
 <script>
 	import { Button, buttonVariants } from '$lib/components/ui/button';
-	import * as Dialog from '$lib/components/ui/dialog';
 	import InstructionForm from './InstructionForm.svelte';
 
 	let dialogOpen = $state(false);

@@ -5,7 +5,7 @@ const instructionSchema = z.object({
 	title: z.string().max(255),
 	description: z.string(),
 	duration: z.number(),
-	preview_file: z.string().max(255)
+	preview_file: z.instanceof(File, { message: 'Please upload a file.' })
 });
 
 export default instructionSchema;
