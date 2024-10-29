@@ -12,14 +12,25 @@
 
 	import stepSchema, { type StepSchema } from './schema';
 
-	let { open = $bindable(), edit = false, initialData = {} } = $props();
+	type Props = {
+		edit?: boolean;
+		open?: boolean;
+		initialData?: any;
+	};
+
+	let { open = $bindable<boolean>(), edit = false, initialData }: Props = $props();
 	let instructions = $derived($page.data.instructions);
 
-	const form = superForm(initialData as SuperValidated<Infer<StepSchema>>, {
-		validators: zodClient(stepSchema),
-		applyAction: true,
-		dataType: 'json'
-	});
+	const form = superForm(
+		{ ...initialData, instruction: initialData?.instruction_id } as SuperValidated<
+			Infer<StepSchema>
+		>,
+		{
+			validators: zodClient(stepSchema),
+			applyAction: true,
+			dataType: 'json'
+		}
+	);
 
 	const { form: formData, enhance } = form;
 	const file = fileProxy(form, 'attached_file');
@@ -34,7 +45,7 @@
 	let selectedInstruction = $derived(
 		$formData.instruction
 			? {
-					label: instructions.find((i) => i.id === $formData.instruction).title,
+					label: instructions.find((i: any) => i.id === $formData.instruction).title,
 					value: $formData.instruction
 				}
 			: undefined
@@ -71,7 +82,7 @@
 			class="mt-8 space-y-2"
 			use:enhance
 			method="POST"
-			action="/steps"
+			action={edit ? `/steps/${initialData!.id}?/update` : '/steps'}
 			enctype="multipart/form-data"
 		>
 			<Form.Field {form} name="instruction">

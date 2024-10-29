@@ -6,14 +6,12 @@ const stepSchema = z.object({
 	title: z.string().max(255), // Assuming a max length for title
 	description: z.string(), // Assuming richtext can be represented as a string
 	step_nr: z.number().int().positive(), // Ensuring step number is a positive integer
-	attached_file: z
-		.instanceof(File)
-		.refine(
-			(file) => ['image/png', 'image/jpeg', 'video/mp4', 'application/pdf'].includes(file.type),
-			{
-				message: 'File must be an image, video, or PDF.'
-			}
-		)
+	attached_file: z.union([
+		z.instanceof(File).refine((file) => file.size > 0, {
+			message: 'Please upload a valid file.'
+		}),
+		z.string().min(1, { message: 'Please provide a valid string.' })
+	])
 });
 
 export type StepSchema = typeof stepSchema;
