@@ -32,13 +32,13 @@
 </script>
 
 <div class="flex flex-1 flex-row justify-between">
-	<h1 class="text-2xl">Steps</h1>
+	<h1 class="text-2xl">Instructions</h1>
 
 	<Button
 		on:click={() => {
 			selectedInstruction = undefined;
 			dialogOpen = true;
-		}}>Add Steps</Button
+		}}>Add instruction</Button
 	>
 </div>
 

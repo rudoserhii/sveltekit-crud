@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 const stepSchema = z.object({
-	instruction: z.number().int(),
+	instruction: z.number().int().optional(),
 	type: z.enum(['image', 'video', 'pdf', 'text']),
 	title: z.string().max(255), // Assuming a max length for title
 	description: z.string(), // Assuming richtext can be represented as a string

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
 	import Input from '$lib/components/ui/input/input.svelte';
+	import * as Table from '$lib/components/ui/table';
 
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as Form from '$lib/components/ui/form';
@@ -8,6 +9,8 @@
 	import { superForm, type SuperValidated, type Infer, fileProxy } from 'sveltekit-superforms';
 	import instructionSchema from './schema';
 	import { zodClient } from 'sveltekit-superforms/adapters';
+	import StepForm from '../steps/StepForm.svelte';
+	import { page } from '$app/stores';
 
 	type Props = {
 		edit?: boolean;
@@ -19,10 +22,16 @@
 	const form = superForm(initialData as SuperValidated<Infer<typeof instructionSchema>>, {
 		validators: zodClient(instructionSchema),
 		applyAction: true,
-		dataType: 'json'
+		dataType: 'json',
+		onUpdate: (event) => {
+			console.log(event);
+		}
 	});
 	const { form: formData, enhance } = form;
 	const file = fileProxy(form, 'preview_file');
+
+	// steps
+	let stepDialogOpen = $state(false);
 </script>
 
 <Dialog.Root bind:open>
@@ -77,6 +86,42 @@
 					<input type="file" hidden {...attrs} bind:files={$file} />
 				</Form.Control>
 			</Form.Field>
+
+			<div class="!mt-4 flex flex-row justify-between">
+				<h5 class="text-lg font-bold">Steps</h5>
+
+				<Button
+					size="sm"
+					on:click={() => {
+						stepDialogOpen = true;
+					}}>Add a step</Button
+				>
+			</div>
+			<Table.Root>
+				<Table.Header>
+					<Table.Row class="text-sm">
+						<Table.Head>Type</Table.Head>
+						<Table.Head>Title</Table.Head>
+						<Table.Head>Description</Table.Head>
+
+						<Table.Head></Table.Head>
+					</Table.Row>
+				</Table.Header>
+
+				<Table.Body>
+					{#each $formData.steps || [] as step}
+						<Table.Row>
+							<Table.Cell>{step.type}</Table.Cell>
+							<Table.Cell>{step.title}</Table.Cell>
+							<Table.Cell>{step.description}</Table.Cell>
+
+							<Table.Cell align="right">
+								<Button variant="secondary" size="sm">Edit</Button>
+								<Button variant="destructive" size="sm" on:click={() => {}}>Delete</Button>
+							</Table.Cell>
+						</Table.Row>{/each}
+				</Table.Body>
+			</Table.Root>
 		</form>
 
 		<Dialog.Footer>
@@ -84,3 +129,7 @@
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>
+
+{#if stepDialogOpen}
+	<StepForm bind:open={stepDialogOpen} edit={false} initialData={{ instruction: initialData.id }} />
+{/if}

@@ -14,7 +14,8 @@ export const load: PageServerLoad = async () => {
 		instructions: await db.query.instructions.findMany({
 			with: {
 				created_by: true,
-				updated_by: true
+				updated_by: true,
+				steps: true
 			},
 			where: isNull(instructions.deletedAt),
 			orderBy: [asc(instructions.id)]

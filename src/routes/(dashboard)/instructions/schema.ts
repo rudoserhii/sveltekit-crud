@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import stepSchema from '../steps/schema';
 
 const instructionSchema = z.object({
 	id: z.number().optional(),
@@ -10,7 +11,9 @@ const instructionSchema = z.object({
 			message: 'Please upload a valid file.'
 		}),
 		z.string().min(1, { message: 'Please provide a valid string.' })
-	])
+	]),
+	steps: z.array(stepSchema).optional(),
+	assets: z.array(z.number()).optional()
 });
 
 export default instructionSchema;

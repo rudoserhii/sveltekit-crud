@@ -41,7 +41,6 @@ export const actions = {
 		const fileExtension = file.name.split('.').reverse()[0];
 
 		const outputFileName = `${crypto.randomUUID()}.${fileExtension}`;
-		console.log('outputFileName :', outputFileName);
 
 		writeFileSync(`static/uploads/${outputFileName}`, Buffer.from(await file.arrayBuffer()));
 
@@ -55,7 +54,7 @@ export const actions = {
 				created_by: event.locals.auth?.userId,
 				updated_by: event.locals.auth?.userId,
 				attached_file: `/uploads/${outputFileName}`,
-				instruction_id: form.data.instruction,
+				instruction: form.data.instruction,
 				type: form.data.type
 			})
 			.returning();

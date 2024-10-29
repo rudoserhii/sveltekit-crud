@@ -38,7 +38,7 @@ export const steps = pgTable('steps', {
 	description: text('description').notNull(),
 	step_nr: integer('step_nr').notNull(),
 	attached_file: varchar('attached_file', { length: 255 }).notNull(),
-	instruction_id: integer('instruction_id')
+	instruction: integer('instruction_id')
 		.notNull()
 		.references(() => instructions.id, { onDelete: 'cascade' }),
 	deletedAt: timestamp('deleted_at', { withTimezone: true }),
@@ -51,7 +51,11 @@ export const steps = pgTable('steps', {
 });
 export const stepsRelations = relations(steps, ({ one }) => ({
 	created_by: one(users, { fields: [steps.created_by], references: [users.id] }),
-	updated_by: one(users, { fields: [steps.updated_by], references: [users.id] })
+	updated_by: one(users, { fields: [steps.updated_by], references: [users.id] }),
+	instruction: one(instructions, {
+		fields: [steps.instruction],
+		references: [instructions.id]
+	})
 }));
 
 export const assets = pgTable('assets', {

@@ -21,16 +21,11 @@
 	let { open = $bindable<boolean>(), edit = false, initialData }: Props = $props();
 	let instructions = $derived($page.data.instructions);
 
-	const form = superForm(
-		{ ...initialData, instruction: initialData?.instruction_id } as SuperValidated<
-			Infer<StepSchema>
-		>,
-		{
-			validators: zodClient(stepSchema),
-			applyAction: true,
-			dataType: 'json'
-		}
-	);
+	const form = superForm(initialData as SuperValidated<Infer<StepSchema>>, {
+		validators: zodClient(stepSchema),
+		applyAction: true,
+		dataType: 'json'
+	});
 
 	const { form: formData, enhance } = form;
 	const file = fileProxy(form, 'attached_file');
@@ -93,6 +88,7 @@
 						onSelectedChange={(v) => {
 							v && ($formData.instruction = v.value);
 						}}
+						disabled={!edit && !!initialData.instruction}
 					>
 						<Select.Trigger {...attrs}>
 							<Select.Value placeholder="Select an instruction" />
