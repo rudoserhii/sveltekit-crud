@@ -11,7 +11,7 @@ export const instructions = pgTable('instructions', {
 	title: varchar('title', { length: 255 }).notNull(),
 	description: text('description').notNull(),
 	duration: integer('duration').notNull(),
-	preview_file: varchar('preview_file', { length: 255 }).notNull(), // Assuming file path or URL
+	preview_file: varchar('preview_file', { length: 255 }).notNull(),
 	created_by: integer('created_by')
 		.notNull()
 		.references(() => users.id),
@@ -24,21 +24,23 @@ export const instructions = pgTable('instructions', {
 		.$onUpdate(() => new Date()),
 	deletedAt: timestamp('deleted_at', { withTimezone: true })
 });
-export const instructionsRelations = relations(instructions, ({ one }) => ({
+export const instructionsRelations = relations(instructions, ({ one, many }) => ({
 	created_by: one(users, { fields: [instructions.created_by], references: [users.id] }),
-	updated_by: one(users, { fields: [instructions.updated_by], references: [users.id] })
+	updated_by: one(users, { fields: [instructions.updated_by], references: [users.id] }),
+	steps: many(steps),
+	instruction_assets: many(instruction_assets)
 }));
 
 export const steps = pgTable('steps', {
 	id: serial('id').primaryKey(),
-	type: varchar('type', { length: 50 }).notNull(), // e.g., 'image', 'video', 'pdf', 'text'
+	type: varchar('type', { length: 50 }).notNull(),
 	title: varchar('title', { length: 255 }).notNull(),
-	description: text('description').notNull(), // Rich text can be stored as text
+	description: text('description').notNull(),
 	step_nr: integer('step_nr').notNull(),
-	attached_file: varchar('attached_file', { length: 255 }).notNull(), // Assuming file path or URL
+	attached_file: varchar('attached_file', { length: 255 }).notNull(),
 	instruction_id: integer('instruction_id')
 		.notNull()
-		.references(() => instructions.id), // Foreign key
+		.references(() => instructions.id, { onDelete: 'cascade' }),
 	deletedAt: timestamp('deleted_at', { withTimezone: true }),
 	created_by: integer('created_by')
 		.notNull()

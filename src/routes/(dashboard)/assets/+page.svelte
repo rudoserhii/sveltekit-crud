@@ -32,7 +32,12 @@
 <div class="flex flex-1 flex-row justify-between">
 	<h1 class="text-2xl">Assets</h1>
 
-	<Button on:click={() => (dialogOpen = true)}>Add Assets</Button>
+	<Button
+		on:click={() => {
+			selectedAsset = undefined;
+			dialogOpen = true;
+		}}>Add Assets</Button
+	>
 </div>
 
 <div class="mt-4">

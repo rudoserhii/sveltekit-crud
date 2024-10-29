@@ -45,7 +45,7 @@
 	let selectedInstruction = $derived(
 		$formData.instruction
 			? {
-					label: instructions.find((i: any) => i.id === $formData.instruction).title,
+					label: instructions.find((i: any) => i.id === $formData.instruction)?.title,
 					value: $formData.instruction
 				}
 			: undefined
