@@ -1,13 +1,11 @@
 import { relations } from 'drizzle-orm';
 import { pgTable, serial, text, integer, varchar, timestamp, json } from 'drizzle-orm/pg-core';
 
-// User model
 export const users = pgTable('users', {
 	id: serial('id').primaryKey(),
 	name: varchar('name', { length: 255 }).notNull()
 });
 
-// Instruction model
 export const instructions = pgTable('instructions', {
 	id: serial('id').primaryKey(),
 	title: varchar('title', { length: 255 }).notNull(),
@@ -31,7 +29,6 @@ export const instructionsRelations = relations(instructions, ({ one }) => ({
 	updated_by: one(users, { fields: [instructions.updated_by], references: [users.id] })
 }));
 
-// Step model
 export const steps = pgTable('steps', {
 	id: serial('id').primaryKey(),
 	type: varchar('type', { length: 50 }).notNull(), // e.g., 'image', 'video', 'pdf', 'text'
@@ -42,10 +39,19 @@ export const steps = pgTable('steps', {
 	instruction_id: integer('instruction_id')
 		.notNull()
 		.references(() => instructions.id), // Foreign key
-	deletedAt: timestamp('deleted_at', { withTimezone: true })
+	deletedAt: timestamp('deleted_at', { withTimezone: true }),
+	created_by: integer('created_by')
+		.notNull()
+		.references(() => users.id),
+	updated_by: integer('updated_by')
+		.notNull()
+		.references(() => users.id)
 });
+export const stepsRelations = relations(steps, ({ one }) => ({
+	created_by: one(users, { fields: [steps.created_by], references: [users.id] }),
+	updated_by: one(users, { fields: [steps.updated_by], references: [users.id] })
+}));
 
-// Asset model
 export const assets = pgTable('assets', {
 	id: serial('id').primaryKey(),
 	name: varchar('name', { length: 255 }).notNull(),
@@ -53,7 +59,6 @@ export const assets = pgTable('assets', {
 	deletedAt: timestamp('deleted_at', { withTimezone: true })
 });
 
-// Instruction-Asset relation table
 export const instruction_assets = pgTable('instruction_assets', {
 	instruction_id: integer('instruction_id')
 		.notNull()
@@ -63,12 +68,12 @@ export const instruction_assets = pgTable('instruction_assets', {
 		.references(() => assets.id)
 });
 
-// Exporting all models for use
 export const models = {
 	users,
 	instructions,
 	steps,
 	assets,
 	instruction_assets,
-	instructionsRelations
+	instructionsRelations,
+	stepsRelations
 };

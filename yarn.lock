@@ -1987,7 +1987,7 @@ __metadata:
     formsnap: "npm:^1.0.1"
     globals: "npm:^15.0.0"
     jsonwebtoken: "npm:^9.0.2"
-    lucide-svelte: "npm:^0.453.0"
+    lucide-svelte: "npm:^0.454.0"
     pg: "npm:^8.13.1"
     prettier: "npm:^3.3.2"
     prettier-plugin-svelte: "npm:^3.2.6"
@@ -3557,12 +3557,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lucide-svelte@npm:^0.453.0":
-  version: 0.453.0
-  resolution: "lucide-svelte@npm:0.453.0"
+"lucide-svelte@npm:^0.454.0":
+  version: 0.454.0
+  resolution: "lucide-svelte@npm:0.454.0"
   peerDependencies:
     svelte: ^3 || ^4 || ^5.0.0-next.42
-  checksum: 10c0/f11d00f5c0d45a6bc16ec966694592b00490d0bec784910ccaf02c2ce77e4f78db78223e4e7287aebb97b19b255949e965f994fc308daf1f9a5b8c524f784b80
+  checksum: 10c0/6779dbe311012deac5b9da6d0d42fdf436290a67fb36b61495b53b59cb66367ddba2527d62fabafe637f4e36350ace3dbc9225812ab385cf6f2b53b21eca32a5
   languageName: node
   linkType: hard
 
