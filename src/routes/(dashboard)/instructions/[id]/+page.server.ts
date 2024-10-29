@@ -4,7 +4,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 import instructionSchema from '../schema';
 import { writeFileSync } from 'fs';
 import crypto from 'crypto';
-import { instructions } from '$lib/server/db/schema';
+import { instruction_assets, instructions } from '$lib/server/db/schema';
 import db from '$lib/server/db/db';
 import { eq, sql, and, isNull } from 'drizzle-orm';
 
@@ -41,6 +41,15 @@ export const actions = {
 			})
 			.where(and(eq(instructions.id, parseInt(id)), isNull(instructions.deletedAt)))
 			.returning();
+		console.log('form.data.assets :', form.data.assets);
+
+		await db.delete(instruction_assets).where(eq(instruction_assets.instruction_id, parseInt(id)));
+		await db.insert(instruction_assets).values(
+			(form.data.assets || []).map((asset_id) => ({
+				asset_id: asset_id,
+				instruction_id: parseInt(id)
+			}))
+		);
 
 		let instruction = await db.query.instructions.findFirst({
 			where: eq(instructions.id, parseInt(id)),

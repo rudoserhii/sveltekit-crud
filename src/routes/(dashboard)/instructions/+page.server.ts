@@ -4,7 +4,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 import instructionSchema from './schema';
 import { writeFileSync } from 'fs';
 import crypto from 'crypto';
-import { instructions } from '$lib/server/db/schema';
+import { assets, instruction_assets, instructions } from '$lib/server/db/schema';
 import db from '$lib/server/db/db';
 import type { PageServerLoad } from './$types';
 import { asc, eq, isNull } from 'drizzle-orm';
@@ -15,10 +15,17 @@ export const load: PageServerLoad = async () => {
 			with: {
 				created_by: true,
 				updated_by: true,
-				steps: true
+				steps: {
+					where: isNull(assets.deletedAt)
+				},
+				instruction_assets: true
 			},
 			where: isNull(instructions.deletedAt),
 			orderBy: [asc(instructions.id)]
+		}),
+		assets: await db.query.assets.findMany({
+			where: isNull(assets.deletedAt),
+			orderBy: [asc(assets.id)]
 		})
 	};
 };
@@ -49,6 +56,13 @@ export const actions = {
 				preview_file: `/uploads/${outputFileName}`
 			})
 			.returning();
+
+		await db.insert(instruction_assets).values(
+			(form.data.assets || []).map((asset_id) => ({
+				asset_id: asset_id,
+				instruction_id: id
+			}))
+		);
 
 		let instruction = await db.query.instructions.findFirst({
 			where: eq(instructions.id, id),

@@ -78,11 +78,17 @@ export const assetsRelations = relations(assets, ({ one }) => ({
 export const instruction_assets = pgTable('instruction_assets', {
 	instruction_id: integer('instruction_id')
 		.notNull()
-		.references(() => instructions.id),
+		.references(() => instructions.id, { onDelete: 'cascade' }),
 	asset_id: integer('asset_id')
 		.notNull()
-		.references(() => assets.id)
+		.references(() => assets.id, { onDelete: 'cascade' })
 });
+export const instructionAssetsRelations = relations(instruction_assets, ({ one }) => ({
+	instruction: one(instructions, {
+		fields: [instruction_assets.instruction_id],
+		references: [instructions.id]
+	})
+}));
 
 export const models = {
 	users,
@@ -92,5 +98,6 @@ export const models = {
 	instruction_assets,
 	instructionsRelations,
 	stepsRelations,
-	assetsRelations
+	assetsRelations,
+	instructionAssetsRelations
 };
