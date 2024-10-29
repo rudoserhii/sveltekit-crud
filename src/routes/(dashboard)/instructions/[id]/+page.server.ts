@@ -35,21 +35,21 @@ export const actions = {
 				description: form.data.description,
 				duration: form.data.duration,
 				title: form.data.title,
-				created_by: event.locals.auth?.userId,
 				updated_by: event.locals.auth?.userId,
 				preview_file: file
 			})
 			.where(and(eq(instructions.id, parseInt(id)), isNull(instructions.deletedAt)))
 			.returning();
-		console.log('form.data.assets :', form.data.assets);
 
 		await db.delete(instruction_assets).where(eq(instruction_assets.instruction_id, parseInt(id)));
-		await db.insert(instruction_assets).values(
-			(form.data.assets || []).map((asset_id) => ({
-				asset_id: asset_id,
-				instruction_id: parseInt(id)
-			}))
-		);
+		if (form.data.assets?.length) {
+			await db.insert(instruction_assets).values(
+				(form.data.assets || []).map((asset_id) => ({
+					asset_id: asset_id,
+					instruction_id: parseInt(id)
+				}))
+			);
+		}
 
 		let instruction = await db.query.instructions.findFirst({
 			where: eq(instructions.id, parseInt(id)),

@@ -57,12 +57,14 @@ export const actions = {
 			})
 			.returning();
 
-		await db.insert(instruction_assets).values(
-			(form.data.assets || []).map((asset_id) => ({
-				asset_id: asset_id,
-				instruction_id: id
-			}))
-		);
+		if (form.data.assets?.length) {
+			await db.insert(instruction_assets).values(
+				(form.data.assets || []).map((asset_id) => ({
+					asset_id: asset_id,
+					instruction_id: id
+				}))
+			);
+		}
 
 		let instruction = await db.query.instructions.findFirst({
 			where: eq(instructions.id, id),

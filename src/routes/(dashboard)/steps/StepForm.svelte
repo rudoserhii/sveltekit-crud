@@ -18,7 +18,7 @@
 		initialData?: any;
 	};
 
-	let { open = $bindable<boolean>(), edit = false, initialData }: Props = $props();
+	let { open = $bindable<boolean>(), edit = false, initialData = {} }: Props = $props();
 	let instructions = $derived($page.data.instructions);
 
 	const form = superForm(initialData as SuperValidated<Infer<StepSchema>>, {
@@ -156,7 +156,7 @@
 						</p>
 					</div>
 
-					<input type="file" hidden {...attrs} bind:files={$file} />
+					<input type="file" hidden {...attrs} bind:files={$file} accept="video/*, image/*, .pdf" />
 				</Form.Control>
 			</Form.Field>
 		</form>

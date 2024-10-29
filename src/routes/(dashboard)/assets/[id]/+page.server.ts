@@ -36,7 +36,6 @@ export const actions = {
 				// @ts-ignore
 				name: form.data.name,
 				asset_file: [...outputFiles, ...(form.data.old_files || [])],
-				created_by: event.locals.auth?.userId,
 				updated_by: event.locals.auth?.userId
 			})
 			.where(and(eq(assets.id, parseInt(id)), isNull(assets.deletedAt)))

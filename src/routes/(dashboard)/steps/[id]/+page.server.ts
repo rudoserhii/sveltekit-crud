@@ -35,10 +35,9 @@ export const actions = {
 				description: form.data.description,
 				title: form.data.title,
 				step_nr: form.data.step_nr,
-				created_by: event.locals.auth?.userId,
 				updated_by: event.locals.auth?.userId,
 				attached_file: file,
-				instruction_id: form.data.instruction,
+				instruction: form.data.instruction,
 				type: form.data.type
 			})
 			.where(and(eq(steps.id, parseInt(id)), isNull(steps.deletedAt)))

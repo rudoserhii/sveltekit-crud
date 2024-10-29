@@ -7,9 +7,17 @@ const instructionSchema = z.object({
 	description: z.string(),
 	duration: z.number(),
 	preview_file: z.union([
-		z.instanceof(File).refine((file) => file.size > 0, {
-			message: 'Please upload a valid file.'
-		}),
+		z.instanceof(File).refine(
+			(file) => {
+				const allowedTypes = ['image/'];
+				const mimeType = file.type;
+
+				return allowedTypes.some((type) => mimeType.startsWith(type)) && file.size > 0;
+			},
+			{
+				message: 'Please upload a valid file.'
+			}
+		),
 		z.string().min(1, { message: 'Please provide a valid string.' })
 	]),
 	steps: z.array(stepSchema).optional(),

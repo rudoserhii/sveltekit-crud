@@ -25,20 +25,16 @@
 		initialData?: any;
 	};
 	let { open = $bindable(), edit = false, initialData = {} }: Props = $props();
-	console.log('initialData :', initialData);
 
 	const form = superForm(
 		{
 			...initialData,
-			assets: initialData.instruction_assets.map((ia: any) => ia.asset_id)
+			assets: (initialData.instruction_assets || []).map((ia: any) => ia.asset_id)
 		} as SuperValidated<Infer<typeof instructionSchema>>,
 		{
 			validators: zodClient(instructionSchema),
 			applyAction: true,
-			dataType: 'json',
-			onResult: (event) => {
-				console.log(event);
-			}
+			dataType: 'json'
 		}
 	);
 	const { form: formData, enhance } = form;
@@ -104,7 +100,7 @@
 						</p>
 					</div>
 
-					<input type="file" hidden {...attrs} bind:files={$file} />
+					<input type="file" hidden {...attrs} bind:files={$file} accept="image/jpeg, image/png" />
 				</Form.Control>
 			</Form.Field>
 
