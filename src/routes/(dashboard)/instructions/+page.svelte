@@ -3,7 +3,7 @@
 	import InstructionForm from './InstructionForm.svelte';
 	import * as Table from '$lib/components/ui/table';
 
-	let { data } = $props();
+	let { data, form } = $props();
 
 	let instructions = $state(data.instructions);
 
@@ -14,6 +14,12 @@
 	});
 
 	let dialogOpen = $state(false);
+
+	$effect(() => {
+		if (form?.form.valid) {
+			dialogOpen = false;
+		}
+	});
 
 	async function handleDelete(id: number) {
 		const response = await fetch(`/api/instructions/${id}`, {

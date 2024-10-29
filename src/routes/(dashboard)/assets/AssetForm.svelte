@@ -17,18 +17,29 @@
 
 	import _ from 'lodash';
 
-	let { open = $bindable(), edit = false, initialData = {} } = $props();
+	type Props = {
+		edit?: boolean;
+		open?: boolean;
+		initialData?: any;
+	};
+	let { open = $bindable(), edit = false, initialData = {} }: Props = $props();
 
-	const form = superForm(initialData as SuperValidated<Infer<typeof assetSchema>>, {
-		validators: zodClient(assetSchema),
-		applyAction: true,
-		dataType: 'json'
-	});
+	const form = superForm(
+		{ ...initialData, old_files: initialData.asset_file as string[] } as SuperValidated<
+			Infer<typeof assetSchema>
+		>,
+		{
+			validators: zodClient(assetSchema),
+			applyAction: true,
+			dataType: 'json'
+		}
+	);
 	const { form: formData, enhance } = form;
 
 	const files = filesProxy(form, 'new_files');
 	const oldFiles = fieldProxy(form, 'old_files');
 
+	$files = $files || [];
 	$oldFiles = $oldFiles || [];
 </script>
 
@@ -63,17 +74,33 @@
 				</Form.Control>
 			</Form.Field>
 
-			{#each $formData.new_files || [] as asset}
-				<p class="text-sm text-foreground/80">
-					{asset instanceof File ? asset?.name : asset}
-				</p>
-			{/each}
+			<ul>
+				{#each $formData.new_files || [] as asset}
+					<li class="flex flex-row items-center justify-between text-sm text-foreground/80">
+						<span>{asset instanceof File ? asset?.name : asset}</span>
+						<Button
+							variant="outline"
+							size="sm"
+							onclick={() => {
+								$formData.new_files = ($formData.new_files || []).filter((file) => file !== asset);
+							}}>Remove</Button
+						>
+					</li>
+				{/each}
 
-			{#each $formData.old_files || [] as asset}
-				<p class="text-sm text-foreground/80">
-					{asset}
-				</p>
-			{/each}
+				{#each $formData.old_files || [] as asset}
+					<li class="flex flex-row items-center justify-between text-sm text-foreground/80">
+						<span>{asset}</span>
+						<Button
+							variant="outline"
+							size="sm"
+							onclick={() => {
+								$formData.old_files = ($formData.old_files || []).filter((file) => file !== asset);
+							}}>Remove</Button
+						>
+					</li>
+				{/each}
+			</ul>
 		</form>
 
 		<Dialog.Footer>

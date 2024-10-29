@@ -9,7 +9,12 @@
 	import instructionSchema from './schema';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 
-	let { open = $bindable(), edit = false, initialData = {} } = $props();
+	type Props = {
+		edit?: boolean;
+		open?: boolean;
+		initialData?: any;
+	};
+	let { open = $bindable(), edit = false, initialData = {} }: Props = $props();
 
 	const form = superForm(initialData as SuperValidated<Infer<typeof instructionSchema>>, {
 		validators: zodClient(instructionSchema),

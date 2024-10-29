@@ -3,13 +3,21 @@
 	import AssetForm from './AssetForm.svelte';
 	import * as Table from '$lib/components/ui/table';
 
-	let { data } = $props();
+	let { data, form } = $props();
 
 	let assets = $state(data.assets);
-
+	$effect(() => {
+		assets = data.assets;
+	});
 	let selectedAsset = $state<(typeof assets)[0]>();
 
 	let dialogOpen = $state(false);
+
+	$effect(() => {
+		if (form?.form.valid) {
+			dialogOpen = false;
+		}
+	});
 
 	async function handleDelete(id: number) {
 		const response = await fetch(`/api/assets/${id}`, {
@@ -63,5 +71,5 @@
 </div>
 
 {#if dialogOpen}
-	<AssetForm bind:open={dialogOpen} />
+	<AssetForm bind:open={dialogOpen} edit={!!selectedAsset} initialData={selectedAsset} />
 {/if}
