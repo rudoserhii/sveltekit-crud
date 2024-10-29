@@ -14,12 +14,7 @@
 	const form = superForm(initialData as SuperValidated<Infer<typeof instructionSchema>>, {
 		validators: zodClient(instructionSchema),
 		applyAction: true,
-		dataType: 'json',
-		onUpdate(event) {
-			if ((event.result.type = 'success')) {
-				open = false;
-			}
-		}
+		dataType: 'json'
 	});
 	const { form: formData, enhance } = form;
 	const file = fileProxy(form, 'preview_file');

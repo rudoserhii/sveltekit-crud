@@ -56,8 +56,18 @@ export const assets = pgTable('assets', {
 	id: serial('id').primaryKey(),
 	name: varchar('name', { length: 255 }).notNull(),
 	asset_file: json('asset_file').notNull(), // Storing multiple files as JSON
-	deletedAt: timestamp('deleted_at', { withTimezone: true })
+	deletedAt: timestamp('deleted_at', { withTimezone: true }),
+	created_by: integer('created_by')
+		.notNull()
+		.references(() => users.id),
+	updated_by: integer('updated_by')
+		.notNull()
+		.references(() => users.id)
 });
+export const assetsRelations = relations(assets, ({ one }) => ({
+	created_by: one(users, { fields: [assets.created_by], references: [users.id] }),
+	updated_by: one(users, { fields: [assets.updated_by], references: [users.id] })
+}));
 
 export const instruction_assets = pgTable('instruction_assets', {
 	instruction_id: integer('instruction_id')
@@ -75,5 +85,6 @@ export const models = {
 	assets,
 	instruction_assets,
 	instructionsRelations,
-	stepsRelations
+	stepsRelations,
+	assetsRelations
 };

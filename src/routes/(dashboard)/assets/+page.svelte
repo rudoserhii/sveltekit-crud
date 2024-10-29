@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button';
+	import AssetForm from './AssetForm.svelte';
 
 	let { data } = $props();
 
@@ -11,3 +12,7 @@
 
 	<Button on:click={() => (dialogOpen = true)}>Add Assets</Button>
 </div>
+
+{#if dialogOpen}
+	<AssetForm bind:open={dialogOpen} />
+{/if}
