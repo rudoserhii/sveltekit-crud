@@ -38,7 +38,7 @@ export const actions = {
 				asset_file: [...outputFiles, ...(form.data.old_files || [])],
 				updated_by: event.locals.auth?.userId
 			})
-			.where(and(eq(assets.id, parseInt(id)), isNull(assets.deletedAt)))
+			.where(and(eq(assets.id, parseInt(id)), isNull(assets.deleted_at)))
 			.returning();
 
 		return withFiles({ form });

@@ -16,7 +16,7 @@ export const load: PageServerLoad = async () => {
 				created_by: true,
 				updated_by: true
 			},
-			where: isNull(assets.deletedAt),
+			where: isNull(assets.deleted_at),
 			orderBy: [asc(assets.id)]
 		})
 	};

@@ -9,13 +9,15 @@ export const DELETE: RequestHandler = async (event) => {
 	if (id) {
 		await db
 			.update(instructions)
-			.set({ deletedAt: sql`now()` })
-			.where(and(eq(instructions.id, parseInt(id)), isNull(instructions.deletedAt)));
+			.set({ deleted_at: sql`now()`, deleted_by: event.locals.auth?.userId })
+			.where(and(eq(instructions.id, parseInt(id)), isNull(instructions.deleted_at)));
 
 		await db
 			.update(steps)
-			.set({ deletedAt: sql`now()` })
-			.where(and(eq(steps.instruction, parseInt(id)), isNull(steps.deletedAt)));
+			.set({ deleted_at: sql`now()`, deleted_by: event.locals.auth?.userId })
+			.where(and(eq(steps.instruction, parseInt(id)), isNull(steps.deleted_at)));
+
+		await db.delete(instruction_assets).where(eq(instruction_assets.instruction_id, parseInt(id)));
 
 		return json({ success: true });
 	}

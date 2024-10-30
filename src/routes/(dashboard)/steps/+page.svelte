@@ -62,11 +62,13 @@
 					<Table.Cell>{step.title}</Table.Cell>
 					<Table.Cell>{step.description}</Table.Cell>
 					<Table.Cell>
-						<img
-							src={step.attached_file}
-							class="h-12 w-12 rounded-full border object-cover"
-							alt="step Preview"
-						/>
+						{#if step.attached_file}
+							<img
+								src={step.attached_file}
+								class="h-12 w-12 rounded-full border object-cover"
+								alt="step Preview"
+							/>
+						{/if}
 					</Table.Cell>
 					<Table.Cell>{step.created_by.name}</Table.Cell>
 					<Table.Cell>{step.updated_by.name}</Table.Cell>

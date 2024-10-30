@@ -4,7 +4,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 import instructionSchema from './schema';
 import { writeFileSync } from 'fs';
 import crypto from 'crypto';
-import { assets, instruction_assets, instructions } from '$lib/server/db/schema';
+import { assets, instruction_assets, instructions, steps } from '$lib/server/db/schema';
 import db from '$lib/server/db/db';
 import type { PageServerLoad } from './$types';
 import { asc, eq, isNull } from 'drizzle-orm';
@@ -16,15 +16,15 @@ export const load: PageServerLoad = async () => {
 				created_by: true,
 				updated_by: true,
 				steps: {
-					where: isNull(assets.deletedAt)
+					where: isNull(steps.deleted_at)
 				},
 				instruction_assets: true
 			},
-			where: isNull(instructions.deletedAt),
+			where: isNull(instructions.deleted_at),
 			orderBy: [asc(instructions.id)]
 		}),
 		assets: await db.query.assets.findMany({
-			where: isNull(assets.deletedAt),
+			where: isNull(assets.deleted_at),
 			orderBy: [asc(assets.id)]
 		})
 	};

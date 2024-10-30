@@ -22,7 +22,8 @@ export const instructions = pgTable('instructions', {
 	updated_at: timestamp('updated_at')
 		.defaultNow()
 		.$onUpdate(() => new Date()),
-	deletedAt: timestamp('deleted_at', { withTimezone: true })
+	deleted_at: timestamp('deleted_at', { withTimezone: true }),
+	deleted_by: integer('deleted_by').references(() => users.id)
 });
 export const instructionsRelations = relations(instructions, ({ one, many }) => ({
 	created_by: one(users, { fields: [instructions.created_by], references: [users.id] }),
@@ -41,7 +42,8 @@ export const steps = pgTable('steps', {
 	instruction: integer('instruction_id')
 		.notNull()
 		.references(() => instructions.id, { onDelete: 'cascade' }),
-	deletedAt: timestamp('deleted_at', { withTimezone: true }),
+	deleted_at: timestamp('deleted_at', { withTimezone: true }),
+	deleted_by: integer('deleted_by').references(() => users.id),
 	created_by: integer('created_by')
 		.notNull()
 		.references(() => users.id),
@@ -62,7 +64,8 @@ export const assets = pgTable('assets', {
 	id: serial('id').primaryKey(),
 	name: varchar('name', { length: 255 }).notNull(),
 	asset_file: json('asset_file').notNull(), // Storing multiple files as JSON
-	deletedAt: timestamp('deleted_at', { withTimezone: true }),
+	deleted_at: timestamp('deleted_at', { withTimezone: true }),
+	deleted_by: integer('deleted_by').references(() => users.id),
 	created_by: integer('created_by')
 		.notNull()
 		.references(() => users.id),

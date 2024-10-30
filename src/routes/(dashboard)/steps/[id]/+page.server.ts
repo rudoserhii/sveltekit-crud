@@ -40,7 +40,7 @@ export const actions = {
 				instruction: form.data.instruction,
 				type: form.data.type
 			})
-			.where(and(eq(steps.id, parseInt(id)), isNull(steps.deletedAt)))
+			.where(and(eq(steps.id, parseInt(id)), isNull(steps.deleted_at)))
 			.returning();
 
 		let step = await db.query.steps.findFirst({

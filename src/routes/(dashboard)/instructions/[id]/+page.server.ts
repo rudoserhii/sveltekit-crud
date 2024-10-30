@@ -38,7 +38,7 @@ export const actions = {
 				updated_by: event.locals.auth?.userId,
 				preview_file: file
 			})
-			.where(and(eq(instructions.id, parseInt(id)), isNull(instructions.deletedAt)))
+			.where(and(eq(instructions.id, parseInt(id)), isNull(instructions.deleted_at)))
 			.returning();
 
 		await db.delete(instruction_assets).where(eq(instruction_assets.instruction_id, parseInt(id)));

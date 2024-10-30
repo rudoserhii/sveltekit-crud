@@ -16,7 +16,7 @@ export const load: PageServerLoad = async () => {
 				created_by: true,
 				updated_by: true
 			},
-			where: isNull(instructions.deletedAt),
+			where: isNull(instructions.deleted_at),
 			orderBy: [asc(instructions.id)]
 		}),
 		steps: await db.query.steps.findMany({
@@ -24,7 +24,7 @@ export const load: PageServerLoad = async () => {
 				created_by: true,
 				updated_by: true
 			},
-			where: isNull(steps.deletedAt),
+			where: isNull(steps.deleted_at),
 			orderBy: [asc(steps.id)]
 		})
 	};
