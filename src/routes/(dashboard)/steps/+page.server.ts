@@ -37,13 +37,17 @@ export const actions = {
 			return fail(400, { form, step: {} as typeof step });
 		}
 
-		const file = form.data.attached_file as File;
-		const fileExtension = file.name.split('.').reverse()[0];
+		let fileName = '';
+		const file = form.data.attached_file;
+		if (file instanceof File) {
+			const fileExtension = file.name.split('.').reverse()[0];
 
-		const outputFileName = `${crypto.randomUUID()}.${fileExtension}`;
+			const outputFileName = `${crypto.randomUUID()}.${fileExtension}`;
 
-		writeFileSync(`static/uploads/${outputFileName}`, Buffer.from(await file.arrayBuffer()));
+			writeFileSync(`static/uploads/${outputFileName}`, Buffer.from(await file.arrayBuffer()));
 
+			fileName = `/uploads/${outputFileName}`;
+		}
 		let [{ id }] = await db
 			.insert(steps)
 			.values({
@@ -53,7 +57,7 @@ export const actions = {
 				step_nr: form.data.step_nr,
 				created_by: event.locals.auth?.userId,
 				updated_by: event.locals.auth?.userId,
-				attached_file: `/uploads/${outputFileName}`,
+				attached_file: fileName ? fileName : undefined,
 				instruction: form.data.instruction,
 				type: form.data.type
 			})

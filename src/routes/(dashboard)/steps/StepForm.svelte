@@ -144,21 +144,29 @@
 				</Form.Control>
 			</Form.Field>
 
-			<Form.Field {form} name="attached_file">
-				<Form.Control let:attrs>
-					<div class="flex flex-row items-center gap-2">
-						<Form.Label class={buttonVariants({ variant: 'outline' })}>Attach File</Form.Label>
+			{#if $formData.type !== 'text'}
+				<Form.Field {form} name="attached_file">
+					<Form.Control let:attrs>
+						<div class="flex flex-row items-center gap-2">
+							<Form.Label class={buttonVariants({ variant: 'outline' })}>Attach File</Form.Label>
 
-						<p class="text-sm text-foreground/80">
-							{($formData.attached_file instanceof File
-								? $formData.attached_file?.name
-								: $formData.attached_file) || 'File not choosen'}
-						</p>
-					</div>
+							<p class="text-sm text-foreground/80">
+								{($formData.attached_file instanceof File
+									? $formData.attached_file?.name
+									: $formData.attached_file) || 'File not choosen'}
+							</p>
+						</div>
 
-					<input type="file" hidden {...attrs} bind:files={$file} accept="video/*, image/*, .pdf" />
-				</Form.Control>
-			</Form.Field>
+						<input
+							type="file"
+							hidden
+							{...attrs}
+							bind:files={$file}
+							accept="video/*, image/*, .pdf"
+						/>
+					</Form.Control>
+				</Form.Field>
+			{/if}
 		</form>
 
 		<Dialog.Footer>

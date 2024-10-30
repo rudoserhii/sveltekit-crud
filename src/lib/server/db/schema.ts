@@ -37,7 +37,7 @@ export const steps = pgTable('steps', {
 	title: varchar('title', { length: 255 }).notNull(),
 	description: text('description').notNull(),
 	step_nr: integer('step_nr').notNull(),
-	attached_file: varchar('attached_file', { length: 255 }).notNull(),
+	attached_file: varchar('attached_file', { length: 255 }),
 	instruction: integer('instruction_id')
 		.notNull()
 		.references(() => instructions.id, { onDelete: 'cascade' }),
