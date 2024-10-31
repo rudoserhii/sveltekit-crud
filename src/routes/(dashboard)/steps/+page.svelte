@@ -90,9 +90,9 @@
 		<Table.Body>
 			{#each processedSteps as step}
 				<Table.Row>
-					<Table.Cell>{step.type}</Table.Cell>
 					<Table.Cell>{step.title}</Table.Cell>
 					<Table.Cell>{step.description}</Table.Cell>
+					<Table.Cell>{step.type}</Table.Cell>
 					<Table.Cell>
 						{#if step.attached_file}
 							<img
