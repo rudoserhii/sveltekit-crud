@@ -2,6 +2,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import AssetForm from './AssetForm.svelte';
 	import * as Table from '$lib/components/ui/table';
+	import TableFilter from '$lib/components/ui/TableFilter.svelte';
 
 	let { data, form } = $props();
 
@@ -27,6 +28,28 @@
 			assets = assets.filter((i) => i.id !== id);
 		}
 	}
+
+	// Sorting and filtering
+	let filterBy = $state<string>('asset');
+	let filter = $state<string>('');
+	let orderBy = $state<string>('id');
+	let order = $state<'desc' | 'asc'>('desc');
+
+	const processedAssets = $derived(
+		assets
+			.filter((i) => ((i[filterBy as keyof typeof i] || '') as string).includes(filter))
+			.sort((a, b) => {
+				const aValue = (a[orderBy as keyof typeof a] || '').toString().toLowerCase();
+				const bValue = (b[orderBy as keyof typeof b] || '').toString().toLowerCase();
+				if (aValue < bValue) {
+					return order === 'asc' ? -1 : 1;
+				}
+				if (aValue > bValue) {
+					return order === 'asc' ? 1 : -1;
+				}
+				return 0;
+			})
+	);
 </script>
 
 <div class="flex flex-1 flex-row justify-between">
@@ -39,6 +62,15 @@
 		}}>Add Assets</Button
 	>
 </div>
+
+<TableFilter
+	bind:filter
+	bind:filterBy
+	filterByItems={['name']}
+	bind:order
+	bind:orderBy
+	orderByItems={['name', 'id']}
+/>
 
 <div class="mt-4">
 	<Table.Root>
@@ -53,7 +85,7 @@
 		</Table.Header>
 
 		<Table.Body>
-			{#each assets as asset}
+			{#each processedAssets as asset}
 				<Table.Row>
 					<Table.Cell>{asset.name}</Table.Cell>
 					<Table.Cell>{(asset.asset_file as string[]).length || 0}</Table.Cell>

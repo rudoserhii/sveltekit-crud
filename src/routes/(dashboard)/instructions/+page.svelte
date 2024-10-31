@@ -2,6 +2,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import InstructionForm from './InstructionForm.svelte';
 	import * as Table from '$lib/components/ui/table';
+	import TableFilter from '$lib/components/ui/TableFilter.svelte';
 
 	let { data, form } = $props();
 
@@ -29,6 +30,28 @@
 			instructions = instructions.filter((i) => i.id !== id);
 		}
 	}
+
+	// Sorting and filtering
+	let filterBy = $state<string>('title');
+	let filter = $state<string>('');
+	let orderBy = $state<string>('id');
+	let order = $state<'desc' | 'asc'>('desc');
+
+	const processedInstructions = $derived(
+		instructions
+			.filter((i) => ((i[filterBy as keyof typeof i] || '') as string).includes(filter))
+			.sort((a, b) => {
+				const aValue = (a[orderBy as keyof typeof a] || '').toString().toLowerCase();
+				const bValue = (b[orderBy as keyof typeof b] || '').toString().toLowerCase();
+				if (aValue < bValue) {
+					return order === 'asc' ? -1 : 1;
+				}
+				if (aValue > bValue) {
+					return order === 'asc' ? 1 : -1;
+				}
+				return 0;
+			})
+	);
 </script>
 
 <div class="flex flex-1 flex-row justify-between">
@@ -41,6 +64,15 @@
 		}}>Add instruction</Button
 	>
 </div>
+
+<TableFilter
+	bind:filter
+	bind:filterBy
+	filterByItems={['title', 'description']}
+	bind:order
+	bind:orderBy
+	orderByItems={['title', 'description', 'id']}
+/>
 
 <div class="mt-4">
 	<Table.Root>
@@ -56,7 +88,7 @@
 		</Table.Header>
 
 		<Table.Body>
-			{#each instructions as instruction}
+			{#each processedInstructions as instruction}
 				<Table.Row>
 					<Table.Cell>{instruction.title}</Table.Cell>
 					<Table.Cell>{instruction.description}</Table.Cell>

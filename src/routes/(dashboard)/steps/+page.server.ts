@@ -7,25 +7,35 @@ import crypto from 'crypto';
 import { steps, instructions } from '$lib/server/db/schema';
 import db from '$lib/server/db/db';
 import type { PageServerLoad } from './$types';
-import { asc, eq, isNull } from 'drizzle-orm';
+import { PgColumn, PgDialect } from 'drizzle-orm/pg-core';
+import { asc, sql, eq, isNull, and, SQL, Column, type AnyColumn } from 'drizzle-orm';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ url }) => {
+	const filterBy = url.searchParams.get('filterBy') || '';
+	const filterValue = url.searchParams.get('filterValue') || '';
+	const sortOrder = url.searchParams.get('sortOrder') || 'asc';
+	const sortBy = url.searchParams.get('sortBy') || 'id';
+
+	let filterQuery: SQL | undefined = isNull(steps.deleted_at);
+	if (filterBy && filterValue) {
+		filterQuery = and(filterQuery, sql.raw(`"steps"."${filterBy}" ILIKE '%${filterValue}%'`));
+	}
+
 	return {
 		instructions: await db.query.instructions.findMany({
 			with: {
 				created_by: true,
 				updated_by: true
 			},
-			where: isNull(instructions.deleted_at),
-			orderBy: [asc(instructions.id)]
+			where: isNull(instructions.deleted_at)
 		}),
 		steps: await db.query.steps.findMany({
 			with: {
 				created_by: true,
 				updated_by: true
 			},
-			where: isNull(steps.deleted_at),
-			orderBy: [asc(steps.id)]
+			where: filterQuery,
+			orderBy: sql.raw(`"steps"."${sortBy || 'id'}" ${sortOrder}`)
 		})
 	};
 };
